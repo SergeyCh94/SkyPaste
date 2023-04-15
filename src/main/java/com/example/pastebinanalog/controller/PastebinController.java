@@ -1,46 +1,51 @@
 package com.example.pastebinanalog.controller;
 
+import com.example.pastebinanalog.dto.PasteCheck;
 import com.example.pastebinanalog.dto.PastebinCreateDTO;
-import com.example.pastebinanalog.dto.PastebinDTO;
-import com.example.pastebinanalog.dto.PastebinUrlDTO;
 import com.example.pastebinanalog.enums.ExpirationTime;
 import com.example.pastebinanalog.enums.Status;
 import com.example.pastebinanalog.service.PastebinService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/my-awesome-pastebin.tld")
+@RequestMapping("/my-awesome-pastebin")
 public class PastebinController {
+
 
     private final PastebinService pastebinService;
 
-    public PastebinController(PastebinService pasteFieldService) {
-        this.pastebinService = pasteFieldService;
-    }
-
-    @GetMapping
-    public List<PastebinDTO> getPublicList() {
-        return pastebinService.getPublicPastaList();
-    }
-
-    @GetMapping("/{hash}")
-    public ResponseEntity<PastebinDTO> getByHash(@PathVariable String hash) {
-        return ResponseEntity.ok(pastebinService.getPastaByHash(hash));
+    public PastebinController(PastebinService pastebinService) {
+        this.pastebinService = pastebinService;
     }
 
     @PostMapping
-    public PastebinUrlDTO addPasta(@RequestParam(name = "status") Status status,
-                                   @RequestParam(name = "when to delete") ExpirationTime expirationTime,
-                                   @RequestBody PastebinCreateDTO pastebinCreateDTO) {
-        return pastebinService.createPasta(pastebinCreateDTO, status, expirationTime);
+    public String createPaste(
+            @RequestBody PastebinCreateDTO pastebinDTO,
+            @RequestParam ExpirationTime expirationTime,
+            @RequestParam Status pasteStatus
+
+    ) {
+        return "http://my-awesome-pastebin.tld/" + pastebinService.createPaste(pastebinDTO, expirationTime, pasteStatus);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<PastebinDTO>> searchBy(@RequestParam(required = false) String title,
-                                                      @RequestParam(required = false) String body){
-        return ResponseEntity.ok(pastebinService.search(title, body));
+    @GetMapping(value = "/last-ten")
+    public List<PasteCheck> findAllPublic() {
+        return pastebinService.findAllPublicPaste();
+    }
+
+    @GetMapping(value = "/{link}")
+    public PasteCheck findByLink(@PathVariable String link) {
+        return pastebinService.findByLink(link);
+    }
+
+    @GetMapping
+    public List<PasteCheck> findByTitleOrBody(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String body) {
+
+        return pastebinService.findByTitleOrBody(title, body);
+
     }
 }

@@ -2,25 +2,22 @@ package com.example.pastebinanalog.enums;
 
 import lombok.Getter;
 
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 
 @Getter
 public enum ExpirationTime {
+    TEN_MIN(Duration.ofMinutes(10)),
+    ONE_HOUR(Duration.ofHours(1)),
+    THREE_HOUR(Duration.ofHours(3)),
+    ONE_DAY(Duration.ofDays(1)),
+    ONE_WEEK(Duration.ofDays(7)),
+    ONE_MONTH(Duration.ofDays(30)),
+    INFINITY(Duration.ofDays(100000));
 
-    TEN_MIN(10L, ChronoUnit.MINUTES),
-    HOUR(1L, ChronoUnit.HOURS),
-    THREE_HOURS(3L, ChronoUnit.HOURS),
-    DAY(1L, ChronoUnit.DAYS),
-    WEEK(7L, ChronoUnit.DAYS),
-    MONTH(30L, ChronoUnit.DAYS),
-    UNLIMITED(Long.MAX_VALUE, ChronoUnit.FOREVER);
+    private final Duration duration;
 
-    private final Long time;
-    private final ChronoUnit unit;
-
-    ExpirationTime(Long time, ChronoUnit unit) {
-        this.time = time;
-        this.unit = unit;
+    ExpirationTime(Duration duration) {
+        this.duration = duration;
     }
-
 }

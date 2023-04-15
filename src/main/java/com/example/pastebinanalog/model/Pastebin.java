@@ -1,6 +1,7 @@
 package com.example.pastebinanalog.model;
 
 import com.example.pastebinanalog.enums.Status;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,21 +9,17 @@ import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table
+@Data
 @Getter
 @Setter
 public class Pastebin {
-
+    @Id
+    private String link;
     private String title;
     private String body;
-
-    @Id
-    private String hash;
-
-    private Instant publishedDate;
-    private Instant expiredDate;
-
     @Enumerated(EnumType.STRING)
     private Status status;
+    private Instant expiredTime;
+    private Instant creationTime = Instant.now();
 
 }
